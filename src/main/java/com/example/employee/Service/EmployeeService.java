@@ -30,17 +30,21 @@ public class EmployeeService {
     public Employee updateEmpById(int id, Employee emp) {
         Optional<Employee> existEmploy = employeeRepository.findById(id);
 
-        Employee empToUpdate = existEmploy.get();
-        empToUpdate.setEmpName(emp.getEmpName());
-        empToUpdate.setEmpSalary(emp.getEmpSalary());
-
-
-
-        return employeeRepository.save(empToUpdate);
+        if (existEmploy.isPresent()) {
+            Employee empToUpdate = existEmploy.get();
+            empToUpdate.setEmpName(emp.getEmpName());
+            empToUpdate.setEmpSalary(emp.getEmpSalary());
+            return employeeRepository.save(empToUpdate);
+        }
+        return null;
     }
 
     public boolean deleteById(int id) {
-        employeeRepository.deleteById(id);
-        return  true;
+        Optional<Employee> byId = employeeRepository.findById(id);
+        if (byId.isPresent()){
+            employeeRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
